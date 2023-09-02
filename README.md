@@ -1,42 +1,18 @@
-# jcommon
+# YCollections
+_Formerly known as [jcommon](https://github.com/kravchik/jcommon)_
 
+A set of simple extensions of Java collections to provide a concise FP style. Ideal for 99% cases.
 
-_Let's say we want to filter a Map, and we have two options..._
+* simple API. No boilerplate.
+* no collectors. This leads to concise syntax and doesn't affect performance in 99% of cases.
+* no parallelism. People should start using profiler instead of blind using parallel collections.
+* simple inside. 1-2 steps stack-trace. Easy to debug.
+* mutable collections with mostly non-modifying API
 
-Option 1:
-```
-        sMap = sMap.entrySet().stream()
-                .filter(e -> e.getKey().startsWith("a"))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-```
-
-Option 2:
-```
-        yMap = yMap.filter((k, v) -> k.startsWith("a"));
-```
-
-If you'd prefer Option 2, you are welcome to continue reading.
-
-
-streams are ok if you have many steps, but bad for simple steps (and simple steps are more often)
-instantiation (vs standard, vs Collections, vs Guava) 
-everything extends usual collections (so accepted everywhere)
-everything is modifiable except of added methods
-examples of creating, filtering, mapping, sorting
-maps and sets are sorted (pros)
-ycollectiona are copying every time but...
-
-
-Common utils, abstractions, and tools that I use in my projects. They make Java pleasant.
-
-_There was more code here but it has been moved to [yincubator](https://github.com/kravchik/yincubator)_
-
-_Now, without apache commons dependency!_
-
-**How to MAKE JAVA GREAT AGAIN?**
+**How to make Java great again**
 1. don't use streams or guava
 2. use YCollections
-3. if (IF) your profiler says you to - then refactor an algorithm with YCollections into ugly but efficient empiric code (fors, side-effects, etc)
+3. if (IF) your profiler says you to - then optimize an algorithm with YCollections into ugly but efficient empiric code (fors, side-effects, etc)
 
 They are just extensions of the standard collections - you can use YList everywhere where you use List. Same goes for YArrayList, YSet, YMap, etc.
 
@@ -46,16 +22,16 @@ YCollections will suffice in most cases:
 1. 100% of scripts
 1. 100% of tests
 
-It is better to stick with simple and elegant YCollections and optimize small percentage of places, than to suffer (even if you don't know it yet) with streams, and guava (I even not talking about standard collections initialization).
+It is better to stick with simple and elegant YCollections and optimize small percentage of places, than to suffer (even if you don't know it yet) with streams, and guava, or plain Java collections.
 
 _Why streams are bad?_
-1. `stream()` and `collect` parts. In YCollections you don't need to collect. Though you too have to convert usual collection or array into YCollection (`toYList(someList)`, `al(someArray)`). _You can't imagine how nicer your scripts will look!_
+1. `stream()` and `collect` parts. In YCollections you don't need to collect. Though you too have to convert usual collection or array into YCollection (`toYList(someList)`, `al(someArray)`). _You can't imagine how nicer your scripts will look_
 2. verbosity
 3. you can't ask them to add something (me, you can ask)
 4. premature optimization, complex insides, etc.
 
 _Why Guava is bad?_
-1. `ImmutableList.of` - you can't static import that. In YCollections you just use `al()` or `hm()` (static import from `YArrayList.al()` and `YHashMap.hm()`) Which leads to elegant and concise code. _You can't imagine how nicer your tests will look!_
+1. `ImmutableList.of` - you can't static import that. In YCollections you just use `al()` or `hm()` (static import from `YArrayList.al()` and `YHashMap.hm()`) Which leads to elegant and concise code. _You can't imagine how nicer your tests will look_
 
 
 ## YCollections
@@ -117,9 +93,22 @@ super
 
 <dependency>
     <groupId>yk</groupId>
-    <artifactId>jcommon</artifactId>
-    <version>0.122</version>
+    <artifactId>ycollections</artifactId>
+    <version>0.2</version>
 </dependency>
 ```
 (current dev version is 0.123-SNAPSHOT)
+
+
+
+
+TBD
+
+*streams are ok if you have many steps, but bad for simple steps (and simple steps are more often)
+instantiation (vs standard, vs Collections, vs Guava)
+everything extends usual collections (so accepted everywhere)
+everything is modifiable except of added methods
+examples of creating, filtering, mapping, sorting
+maps and sets are sorted (pros)
+ycollectiona are copying every time but...*
 

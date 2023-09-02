@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>yk</groupId>
-    <artifactId>jcommon</artifactId>
-    <version>0.125-SNAPSHOT</version>
+    <artifactId>ycollections</artifactId>
+    <version>0.2-SNAPSHOT</version>
 
     <packaging>jar</packaging>
-    <name>jcommon</name>
+    <name>ycollections</name>
 
     <prerequisites>
         <maven>2.0.9</maven>
