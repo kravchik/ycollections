@@ -1,10 +1,10 @@
-package yk.jcommon.collections;
+package yk.ycollections;
 
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static yk.jcommon.collections.YArrayList.al;
-import static yk.jcommon.collections.YArrayList.times;
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YArrayList.times;
 
 /**
  * Created by Yuri Kravchik on 17.11.2019

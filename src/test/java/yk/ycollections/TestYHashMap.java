@@ -1,12 +1,12 @@
-package yk.jcommon.collections;
+package yk.ycollections;
 
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static yk.jcommon.collections.YArrayList.al;
-import static yk.jcommon.collections.YHashMap.hm;
-import static yk.jcommon.collections.YHashMap.toYMap;
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YHashMap.hm;
+import static yk.ycollections.YHashMap.toYMap;
 
 /**
  * Created by Yuri Kravchik on 20.12.2018

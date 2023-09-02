@@ -1,4 +1,4 @@
-package yk.jcommon.collections;
+package yk.ycollections;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static yk.jcommon.collections.YHashSet.hs;
+import static yk.ycollections.YHashSet.hs;
 
 /**
  * Created with IntelliJ IDEA.

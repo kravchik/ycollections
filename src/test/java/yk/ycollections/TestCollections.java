@@ -1,4 +1,4 @@
-package yk.jcommon.collections;
+package yk.ycollections;
 
 import org.junit.Test;
 
@@ -6,9 +6,9 @@ import java.util.Collection;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
-import static yk.jcommon.collections.YArrayList.al;
-import static yk.jcommon.collections.YHashMap.hm;
-import static yk.jcommon.collections.YHashSet.hs;
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YHashMap.hm;
+import static yk.ycollections.YHashSet.hs;
 
 public class TestCollections {
 

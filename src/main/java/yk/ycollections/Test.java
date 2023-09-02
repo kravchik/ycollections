@@ -1,4 +1,4 @@
-package yk.jcommon.collections;
+package yk.ycollections;
 
 import java.io.File;
 

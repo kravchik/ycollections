@@ -1,4 +1,4 @@
-package yk.jcommon.collections;
+package yk.ycollections;
 
 public interface Function_T_int<T> {
     T apply(int i);

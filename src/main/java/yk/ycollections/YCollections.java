@@ -1,12 +1,12 @@
-package yk.jcommon.collections;
+package yk.ycollections;
 
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static yk.jcommon.collections.YArrayList.al;
-import static yk.jcommon.collections.YArrayList.toYList;
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YArrayList.toYList;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,14 +1,14 @@
-package yk.jcommon.collections;
+package yk.ycollections;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.function.*;
 
-import static yk.jcommon.collections.YArrayList.al;
-import static yk.jcommon.collections.YArrayList.toYList;
-import static yk.jcommon.collections.YHashMap.hm;
-import static yk.jcommon.collections.YHashSet.toYSet;
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YArrayList.toYList;
+import static yk.ycollections.YHashMap.hm;
+import static yk.ycollections.YHashSet.toYSet;
 
 //TODO tests and remove suppress UnusedDeclaration
 @SuppressWarnings("UnusedDeclaration")
