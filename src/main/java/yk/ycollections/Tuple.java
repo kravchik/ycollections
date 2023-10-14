@@ -1,5 +1,7 @@
 package yk.ycollections;
 
+import java.util.Objects;
+
 /**
  * Created with IntelliJ IDEA.
  * User: yuri
@@ -17,40 +19,19 @@ public class Tuple<A, B> {
 
     @Override
     public String toString() {
-        return "Tuple{" +
-                "a=" + a +
-                ", b=" + b +
-                '}';
+        return "Tuple{a=" + a + ", b=" + b + '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Tuple tuple = (Tuple) o;
-
-        if (a != null) {
-            if (!a.equals(tuple.a)) return false;
-        } else {
-            if (tuple.a != null) return false;
-        }
-        if (b != null) {
-            if (!b.equals(tuple.b)) return false;
-        } else {
-            if (tuple.b != null) return false;
-        }
-
-        return true;
+        Tuple<?, ?> tuple = (Tuple<?, ?>) o;
+        return Objects.equals(a, tuple.a) && Objects.equals(b, tuple.b);
     }
 
     @Override
     public int hashCode() {
-        int result;
-        if (a != null) result = a.hashCode();
-        else result = 0;
-        if (b != null) result = 31 * result + b.hashCode();
-        else result = 31 * result + 0;
-        return result;
+        return Objects.hash(a, b);
     }
 }
