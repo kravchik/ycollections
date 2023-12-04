@@ -332,14 +332,18 @@ public interface YCollection<T> extends Collection<T> {
         return sb.toString();
     }
 
-    //TODO test
     default <V> YMap<T, V> toMapKeys(Function<T, V> f) {
         YMap<T, V> result = hm();
         for (T k : this) result.put(k, f.apply(k));
         return result;
     }
 
-    //TODO test
+    default <K, V> YMap<K, V> toMap(Function<T, K> keys, Function<T, V> values) {
+        YMap<K, V> result = hm();
+        for (T t : this) result.put(keys.apply(t), values.apply(t));
+        return result;
+    }
+
     default boolean notEmpty() {
         return !isEmpty();
     }

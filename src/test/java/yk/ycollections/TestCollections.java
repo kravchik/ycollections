@@ -181,6 +181,16 @@ public class TestCollections {
         assertFalse(c.with("a", "b", "cc").isAll(s -> s.length() == 1));
         assertTrue(c.isAll(s -> s.length() == 1));
 
+        assertEquals(hm(), c.toMapKeys(v -> Integer.parseInt(v)));
+        assertEquals(hm("1", 1), c.with("1").toMapKeys(v -> Integer.parseInt(v)));
+        assertEquals(hm("1", 1, "2", 2), c.with("1", "2").toMapKeys(v -> Integer.parseInt(v)));
+
+        assertEquals(hm(), c.toMap(v -> v, v -> Integer.parseInt(v)));
+        assertEquals(hm("k1", 1), c.with("1").toMap(v -> "k" + v, v -> Integer.parseInt(v)));
+        assertEquals(hm("k1", 1, "k2", 2), c.with("1", "2").toMap(v -> "k" + v, v -> Integer.parseInt(v)));
+
+        assertFalse(c.notEmpty());
+        assertTrue(c.with("a").notEmpty());
     }
 
     private static void testForZip(YCollection<String> c) {
