@@ -1,6 +1,8 @@
 package yk.ycollections;
 
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,9 +19,22 @@ public class Tuple<A, B> {
         this.b = b;
     }
 
+    public static <A, B> Tuple<A, B> tuple(A a, B b) {
+        return new Tuple<>(a, b);
+    }
+
+    public <R> R mapThis(Function<Tuple<A, B>, R> f) {
+        return f.apply(this);
+    }
+
+    public Tuple<A, B> forThis(Consumer<Tuple<A, B>> c) {
+        c.accept(this);
+        return this;
+    }
+
     @Override
     public String toString() {
-        return "Tuple{a=" + a + ", b=" + b + '}';
+        return "tuple(" + a + " " + b + ')';
     }
 
     @Override
