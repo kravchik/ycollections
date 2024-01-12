@@ -35,13 +35,6 @@ public class YCollectionWrapper<T> implements YCollection<T> {
     }
 
     @Override
-    public <R> YCollection<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
-        YArrayList<R> result = al();
-        for (T t : this) for (R r : mapper.apply(t)) result.add(r);
-        return result;
-    }
-
-    @Override
     public YList<T> cdr() {
         YList<T> result = al();
         Iterator<T> iterator = this.iterator();

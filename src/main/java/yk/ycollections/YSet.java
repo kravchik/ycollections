@@ -3,10 +3,12 @@ package yk.ycollections;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static yk.ycollections.YHashSet.hs;
+import static yk.ycollections.YHashSet.toYSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,11 +18,30 @@ import static yk.ycollections.YHashSet.hs;
  */
 public interface YSet<T> extends YCollection<T>, Set<T> {
     @Override
+    default YSet<T> copy() {
+        return toYSet(this);
+    }
+    @Override
     YSet<T> filter(Predicate<? super T> predicate);
     @Override
     <R> YSet<R> map(Function<? super T, ? extends R> mapper);
     @Override
-    <R> YSet<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper);
+    default <R> YSet<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
+        return YCollections.flatMap(hs(), this, mapper);
+    }
+    @Override
+    default <R> YSet<R> y(Function<? super T, ? extends Collection<? extends R>> mapper) {
+        return flatMap(mapper);
+    }
+    default <R> YSet<R> yAdj(boolean cycle, BiFunction<T, T, Collection<R>> f) {
+        return YCollections.yAdj(hs(), this, cycle, f);
+    }
+
+    @Override
+    default <T2, R> YCollection<R> yZip(Collection<T2> b, BiFunction<T, T2, Collection<R>> f) {
+        return YCollections.yZip(hs(), this, b, f);
+    }
+
     @Override
     YSet<T> cdr();
 

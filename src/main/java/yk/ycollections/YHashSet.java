@@ -48,11 +48,6 @@ public class YHashSet<T> extends LinkedHashSet<T> implements YSet<T> {
     }
 
     @Override
-    public <R> YSet<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
-        return YCollections.flatMapSet(this, mapper);
-    }
-
-    @Override
     public YSet<T> cdr() {
         YSet<T> result = new YHashSet<>();
         Iterator<T> iterator = this.iterator();

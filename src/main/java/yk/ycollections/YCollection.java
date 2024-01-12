@@ -15,6 +15,10 @@ import static yk.ycollections.YHashSet.toYSet;
 public interface YCollection<T> extends Collection<T> {
 
     YCollection<T> emptyInstance();
+    //TODO test
+    default YCollection<T> copy() {
+        throw new RuntimeException("Not implemented, use toList/toSet");
+    }
 
     YCollection<T> filter(Predicate<? super T> predicate);
 
@@ -30,6 +34,11 @@ public interface YCollection<T> extends Collection<T> {
             gg.add(t);
         }
         return result;
+    }
+    //TODO test
+    default T find(Predicate<? super T> predicate) {
+        for (T t : this) if (predicate.test(t)) return t;
+        return null;
     }
 
     default boolean isAny(Predicate<? super T> predicate) {
@@ -54,8 +63,25 @@ public interface YCollection<T> extends Collection<T> {
         return result;
     }
 
-    //TODO test
-    <R> YCollection<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper);
+    default <R> YCollection<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
+        return YCollections.flatMap(al(), this, mapper);
+    }
+
+    //experimental API
+    //y is actually 'flatMap'
+
+    //Y is like merging/branching pipes
+    //   so any 'map' operation can skip result / map result / generate many results
+    //adj - stands for adjacent
+    default <R> YCollection<R> y(Function<? super T, ? extends Collection<? extends R>> mapper) {
+        return flatMap(mapper);
+    }
+    default <R> YCollection<R> yAdj(boolean cycle, BiFunction<T, T, Collection<R>> f) {
+        return YCollections.yAdj(al(), this, cycle, f);
+    }
+    default <T2, R> YCollection<R> yZip(Collection<T2> b, BiFunction<T, T2, Collection<R>> f) {
+        return YCollections.yZip(al(), this, b, f);
+    }
 
     /**
      * The same as 'forEach', but returns 'this' so can continue using the instasnce.
@@ -273,7 +299,6 @@ public interface YCollection<T> extends Collection<T> {
     }
 
     //TODO test
-    @SuppressWarnings("unchecked")
     default boolean containsAny(Collection<? extends T> tt) {
         for (T t : tt) if (contains(t)) return true;
         return false;
@@ -288,7 +313,7 @@ public interface YCollection<T> extends Collection<T> {
 
     //TODO test
     default String toString(String infix) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         boolean was = false;
         for (Object o : this) {
             if (was) sb.append(infix);
@@ -300,7 +325,7 @@ public interface YCollection<T> extends Collection<T> {
 
     //TODO test
     default String toStringSuffix(String suffix) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         for (Object o : this) sb.append(o).append(suffix);
         return sb.toString();
 

@@ -155,42 +155,76 @@ public class TestCollections {
         assertEquals((Integer) 4, c.with(4).minByFloat(i -> -i));
     }
 
-    private static void testCommon(YCollection<String> c) {
-        assertEquals(c, c.filter(x -> true));
-        assertEquals(c, c.with("2").filter(x -> !x.equals("2")));
-        assertEquals(c.emptyInstance().with("1"), c.with("1").filter(x -> x.equals("1")));
+    private static void testCommon(YCollection<String> col) {
+        //filter
+        assertEquals(col, col.filter(x -> true));
+        assertEquals(col, col.with("2").filter(x -> !x.equals("2")));
+        assertEquals(col.emptyInstance().with("1"), col.with("1").filter(x -> x.equals("1")));
 
-        assertEquals("a", c.with("a", "b").firstOr(null));
-        assertEquals("a", c.with("a", "b").first());
-        assertEquals("b", c.with("b").firstOr("c"));
-        assertEquals("b", c.with("b").first());
-        assertEquals("c", c.with().firstOr("c"));
-        assertEquals(null, c.with().firstOr(null));
-        assertEquals("d", c.with().firstOrCalc(() -> "d"));
-        assertEquals("a", c.with("a").firstOrCalc(() -> "d"));
+        //first or
+        assertEquals("a", col.with("a", "b").firstOr(null));
+        assertEquals("a", col.with("a", "b").first());
+        assertEquals("b", col.with("b").firstOr("c"));
+        assertEquals("b", col.with("b").first());
+        assertEquals("c", col.with().firstOr("c"));
+        assertEquals(null, col.with().firstOr(null));
+        assertEquals("d", col.with().firstOrCalc(() -> "d"));
+        assertEquals("a", col.with("a").firstOrCalc(() -> "d"));
         try {
-            c.with().first();
+            col.with().first();
             fail();
         } catch (Exception ignore) {}
 
-        assertTrue(c.with("a", "b").isAny(s -> s.equals("a")));
-        assertFalse(c.with("a", "b").isAny(s -> s.equals("c")));
-        assertFalse(c.isAny(s -> s.equals("c")));
+        //isAny
+        assertTrue(col.with("a", "b").isAny(s -> s.equals("a")));
+        assertFalse(col.with("a", "b").isAny(s -> s.equals("c")));
+        assertFalse(col.isAny(s -> s.equals("c")));
 
-        assertTrue(c.with("a", "b").isAll(s -> s.length() == 1));
-        assertFalse(c.with("a", "b", "cc").isAll(s -> s.length() == 1));
-        assertTrue(c.isAll(s -> s.length() == 1));
+        //isAll
+        assertTrue(col.with("a", "b").isAll(s -> s.length() == 1));
+        assertFalse(col.with("a", "b", "cc").isAll(s -> s.length() == 1));
+        assertTrue(col.isAll(s -> s.length() == 1));
 
-        assertEquals(hm(), c.toMapKeys(v -> Integer.parseInt(v)));
-        assertEquals(hm("1", 1), c.with("1").toMapKeys(v -> Integer.parseInt(v)));
-        assertEquals(hm("1", 1, "2", 2), c.with("1", "2").toMapKeys(v -> Integer.parseInt(v)));
+        //toMapKeys
+        assertEquals(hm(), col.toMapKeys(v -> Integer.parseInt(v)));
+        assertEquals(hm("1", 1), col.with("1").toMapKeys(v -> Integer.parseInt(v)));
+        assertEquals(hm("1", 1, "2", 2), col.with("1", "2").toMapKeys(v -> Integer.parseInt(v)));
 
-        assertEquals(hm(), c.toMap(v -> v, v -> Integer.parseInt(v)));
-        assertEquals(hm("k1", 1), c.with("1").toMap(v -> "k" + v, v -> Integer.parseInt(v)));
-        assertEquals(hm("k1", 1, "k2", 2), c.with("1", "2").toMap(v -> "k" + v, v -> Integer.parseInt(v)));
+        //toMap
+        assertEquals(hm(), col.toMap(v -> v, v -> Integer.parseInt(v)));
+        assertEquals(hm("k1", 1), col.with("1").toMap(v -> "k" + v, v -> Integer.parseInt(v)));
+        assertEquals(hm("k1", 1, "k2", 2), col.with("1", "2").toMap(v -> "k" + v, v -> Integer.parseInt(v)));
 
-        assertFalse(c.notEmpty());
-        assertTrue(c.with("a").notEmpty());
+        //notEmpty
+        assertFalse(col.notEmpty());
+        assertTrue(col.with("a").notEmpty());
+
+        //y
+        assertEquals(col, col.y(s -> al(s, s)));
+        assertEquals(col.with("a", "a"), col.with("a").y(s -> al(s, s)));
+        assertEquals(col.with("a", "a", "b", "b"), col.with("a", "b").y(s -> al(s, s)));
+        assertEquals(col.with("a"), col.with("a", "b").y(s -> s.equals("a") ? al(s) : al()));
+        assertEquals(col.with("a"), col.with("a", "b").y(s -> s.equals("a") ? al(s) : null));
+
+        //yAdj
+        assertEquals(col, col.yAdj(false, (a, b) -> al()));
+        assertEquals(col, col.with("a").yAdj(false, (a, b) -> al(a, b)));
+        assertEquals(col.with("ab"), col.with("a", "b").yAdj(false, (a, b) -> al(a + b)));
+        assertEquals(col.with("ab", "bc"), col.with("a", "b", "c").yAdj(false, (a, b) -> al(a + b)));
+        assertEquals(col, col.with("a").yAdj(true, (a, b) -> al(a + b)));
+        assertEquals(col.with("ab", "ba"), col.with("a", "b").yAdj(true, (a, b) -> al(a + b)));
+        assertEquals(col.with("ab", "bc", "ca"), col.with("a", "b", "c").yAdj(true, (a, b) -> al(a + b)));
+
+        //yZip
+        assertEquals(col, col.yZip(al(), (a, b) -> al()));
+        assertEquals(col, col.yZip(al("1"), (a, b) -> al()));
+        assertEquals(col, col.with("1").yZip(al(), (a, b) -> al()));
+        assertEquals(col, col.yZip(al(), (a, b) -> null));
+        assertEquals(col, col.yZip(al("1"), (a, b) -> null));
+        assertEquals(col, col.with("1").yZip(al(), (a, b) -> null));
+        assertEquals(col.with("ab"), col.with("a").yZip(al("b"), (a, b) -> al(a + b)));
+        assertEquals(col.with("ab"), col.with("a").yZip(al("b", "c"), (a, b) -> al(a + b)));
+        assertEquals(col.with("ab"), col.with("a", "c").yZip(al("b"), (a, b) -> al(a + b)));
     }
 
     private static void testForZip(YCollection<String> c) {

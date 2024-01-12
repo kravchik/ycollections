@@ -5,6 +5,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.*;
 
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YArrayList.toYList;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,13 +15,17 @@ import java.util.function.*;
  * Date: 8/12/14
  * Time: 3:27 PM
  */
-//TODO remove defaults which return modifiable list
 @SuppressWarnings("ForLoopReplaceableByForEach")
 public interface YList<T> extends YCollection<T>, List<T> {
     //TODO nTimes
 
     @Override//TODO remove (currently needed for cs translator)
     T get(int index);
+
+    @Override
+    default YList<T> copy() {
+        return toYList(this);
+    }
 
     default T getOr(int index, T or) {
         return index >= size() || index < 0 ? or : get(index);
@@ -36,10 +43,12 @@ public interface YList<T> extends YCollection<T>, List<T> {
     }
 
     @Override
-    <R> YList<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper);
+    default <R> YList<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
+        return YCollections.flatMap(al(), this, mapper);
+    }
 
     /**
-     * The same as 'forEach', but returns 'this' so can continue using the instasnce.
+     * The same as 'forEach', but returns 'this' so can continue using the instance.
      */
     @Override
     default YList<T> forEachFun(Consumer<T> consumer) {
@@ -47,6 +56,7 @@ public interface YList<T> extends YCollection<T>, List<T> {
         return this;
     }
 
+    //TODO separate utility iterator
     default <T2> YList<T> forZip(YList<T2> b, BiConsumer<T, T2> f) {
         if (size() != b.size()) throw new RuntimeException("Expected the same size");
         for (int i = 0; i < this.size(); i++) f.accept(this.get(i), b.get(i));
@@ -124,33 +134,58 @@ public interface YList<T> extends YCollection<T>, List<T> {
 
     YList<? extends YList<T>> split(Predicate<T> isSplitter);
 
-    YList<T> reverse();
+    YList<T> reversed();
 
-    default void forEachNeighbours(BiConsumer<T, T> consumer) {
-        for (int i = 0; i < this.size(); i++) {
+    //TODO move to YCollection
+    default <R> YList<R> mapAdj(boolean cycle, BiFunction<T, T, R> f) {
+        YList<R> result = al();
+        if (size() < 2) return result;
+        int till = this.size() - (cycle ? 0 : 1);
+        for (int i = 0; i < till; i++) {
+            T t1 = this.get((i + 0) % this.size());
+            T t2 = this.get((i + 1) % this.size());
+            result.add(f.apply(t1, t2));
+        }
+        return result;
+    }
+
+    //TODO move to YCollection
+    default YList<T> forAdj(boolean cycle, BiConsumer<T, T> consumer) {
+        if (size() < 2) return this;
+        int till = this.size() - (cycle ? 0 : 1);
+        for (int i = 0; i < till; i++) {
             T t1 = this.get((i + 0) % this.size());
             T t2 = this.get((i + 1) % this.size());
             consumer.accept(t1, t2);
         }
+        return this;
     }
 
-    default void forEachNeighbours(Consumer3<T, T, T> consumer) {
-        for (int i = 0; i < this.size(); i++) {
+    //TODO move to YCollection
+    default YList<T> forAdj(boolean cycle, Consumer3<T, T, T> consumer) {
+        if (size() < 3) return this;
+        int till = this.size() - (cycle ? 0 : 2);
+        for (int i = 0; i < till; i++) {
             T t1 = this.get((i + 0) % this.size());
             T t2 = this.get((i + 1) % this.size());
             T t3 = this.get((i + 2) % this.size());
             consumer.accept(t1, t2, t3);
         }
+        return this;
     }
 
-    default void forEachNeighbours(Consumer4<T, T, T, T> consumer) {
-        for (int i = 0; i < this.size(); i++) {
+    //TODO move to YCollection
+    default YList<T> forAdj(boolean cycle, Consumer4<T, T, T, T> consumer) {
+        if (size() < 4) return this;
+        int till = this.size() - (cycle ? 0 : 3);
+        for (int i = 0; i < till; i++) {
             T t1 = this.get((i + 0) % this.size());
             T t2 = this.get((i + 1) % this.size());
             T t3 = this.get((i + 2) % this.size());
             T t4 = this.get((i + 3) % this.size());
             consumer.accept(t1, t2, t3, t4);
         }
+        return this;
     }
 
     @Override
@@ -243,6 +278,42 @@ public interface YList<T> extends YCollection<T>, List<T> {
         return this;
     }
 
+    //TODO test
+    default int indexOf(Predicate<T> p) {
+        for (int i = 0; i < size(); i++) {
+            if (p.test(get(i))) return i;
+        }
+        return -1;
+    }
+
+    //TODO test
+    default int indexOfMax() {
+        int resultIndex = -1;
+        T result = null;
+        for (int i = 0; i < this.size(); i++) {
+            T t = this.get(i);
+            if (result == null || ((Comparable<T>) t).compareTo(result) > 0) {
+                resultIndex = i;
+                result = t;
+            }
+        }
+        return resultIndex;
+    }
+
+    //TODO test
+    default int indexOfMin() {
+        int resultIndex = -1;
+        T result = null;
+        for (int i = 0; i < this.size(); i++) {
+            T t = this.get(i);
+            if (result == null || ((Comparable<T>) t).compareTo(result) < 0) {
+                resultIndex = i;
+                result = t;
+            }
+        }
+        return resultIndex;
+    }
+
     default YList<T> forThis(YListConsumer<T> c) {
         c.accept(this);
         return this;
@@ -250,6 +321,25 @@ public interface YList<T> extends YCollection<T>, List<T> {
 
     default <T2> T2 mapThis(YListFunction<T, T2> f) {
         return f.apply(this);
+    }
+
+    default <R> YList<R> y(Function<? super T, ? extends Collection<? extends R>> mapper) {
+        return flatMap(mapper);
+    }
+    default <R> YList<R> yAdj(boolean cycle, BiFunction<T, T, Collection<R>> f) {
+        YList<R> result = al();
+        if (size() < 2) return result;
+        int till = this.size() - (cycle ? 0 : 1);
+        for (int i = 0; i < till; i++) {
+            T t1 = this.get((i + 0) % this.size());
+            T t2 = this.get((i + 1) % this.size());
+            Collection<R> r = f.apply(t1, t2);
+            if (r != null) result.addAll(r);
+        }
+        return result;
+    }
+    default <T2, R> YList<R> yZip(Collection<T2> b, BiFunction<T, T2, Collection<R>> f) {
+        return YCollections.yZip(al(), this, b, f);
     }
 
     interface YListConsumer<T> {

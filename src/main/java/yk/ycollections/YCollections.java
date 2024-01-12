@@ -44,19 +44,48 @@ public class YCollections {
         return result;
     }
 
-    static <T, R> YArrayList<R> flatMapList(List<T> source, Function<? super T, ? extends Collection<? extends R>> mapper) {
-        YArrayList<R> result = new YArrayList();
-        for (int i = 0, sourceSize = source.size(); i < sourceSize; i++) {
-            for (R r : mapper.apply(source.get(i))) result.add(r);
+    static <T, R, CR extends Collection<R>> CR flatMap(CR result, Collection<T> source, Function<? super T, ? extends Collection<? extends R>> mapper) {
+        for (T s : source) {
+            Collection<? extends R> rr = mapper.apply(s);
+            if (rr != null) result.addAll(rr);
         }
         return result;
     }
 
-    static <T, R> YHashSet<R> flatMapSet(Set<T> source, Function<? super T, ? extends Collection<? extends R>> mapper) {
-        YHashSet<R> result = new YHashSet();
+    static <T, R, CR extends Collection<R>> CR yAdj(CR result, Collection<T> source, boolean cycle, BiFunction<T, T, Collection<R>> f) {
+        T first = null;
+        T last = null;
+        boolean isFirst = true;
+        boolean more1 = false;
         for (T t : source) {
-            for (R r : mapper.apply(t)) result.add(r);
+            if (isFirst) {
+                first = t;
+
+            }
+            if (!isFirst) {
+                Collection<R> r = f.apply(last, t);
+                if (r != null) result.addAll(r);
+                more1 = true;
+            }
+            last = t;
+            isFirst = false;
         }
+        if (cycle && more1) {
+            Collection<R> r = f.apply(last, first);
+            if (r != null) result.addAll(r);
+        }
+        return result;
+    }
+    static <T, T2, R, CR extends Collection<R>> CR yZip(CR result, Collection<T> source, Collection<T2> b, BiFunction<T, T2, Collection<R>> f) {
+        Iterator<T> it1 = source.iterator();
+        Iterator<T2> it2 = b.iterator();
+        while (it1.hasNext() && it2.hasNext()) {
+            T t1 = it1.next();
+            T2 t2 = it2.next();
+            Collection<R> r = f.apply(t1, t2);
+            if (r != null) result.addAll(r);
+        }
+
         return result;
     }
 

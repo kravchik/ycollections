@@ -43,9 +43,9 @@ public class YArrayList<T> extends ArrayList<T> implements YList<T> {
     }
 
     //TODO test
-    public static <T> YArrayList<T> toYList(Collection<T> source) {
+    public static <T> YArrayList<T> toYList(Iterable<T> source) {
         YArrayList<T> result = new YArrayList<>();
-        result.addAll(source);
+        for (T t : source) result.add(t);
         return result;
     }
 
@@ -89,12 +89,6 @@ public class YArrayList<T> extends ArrayList<T> implements YList<T> {
     @Override
     public <R> YArrayList<R> map(Function<? super T, ? extends R> mapper) {
         return YCollections.mapList(this, mapper);
-    }
-
-    //TODO test
-    @Override
-    public <R> YArrayList<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
-        return YCollections.flatMapList(this, mapper);
     }
 
     @Override
@@ -283,7 +277,7 @@ public class YArrayList<T> extends ArrayList<T> implements YList<T> {
 
     //TODO test
     @Override
-    public YArrayList<T> reverse() {
+    public YArrayList<T> reversed() {
         YArrayList<T> result = al();
         for (int i = this.size() - 1; i >= 0; i--) result.add(get(i));
         return result;

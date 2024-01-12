@@ -33,11 +33,6 @@ public class YHashSetWrapper<T> implements YSet<T> {
     }
 
     @Override
-    public <R> YSet<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
-        return YCollections.flatMapSet(original, mapper);
-    }
-
-    @Override
     public YSet<T> cdr() {
         YSet<T> result = new YHashSet<>();
         Iterator<T> iterator = original.iterator();
