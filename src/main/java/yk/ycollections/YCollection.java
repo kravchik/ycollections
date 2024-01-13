@@ -12,12 +12,74 @@ import static yk.ycollections.YHashSet.toYSet;
 
 public interface YCollection<T> extends Collection<T> {
 
+    YCollection<T> take(int count);
+
     default YCollection<T> emptyInstance() {
         throw new RuntimeException("Not implemented");
     }
 
     default YCollection<T> copy() {
         throw new RuntimeException("Not implemented, use toList/toSet");
+    }
+
+    default YSet<T> toSet() {
+        return toYSet(this);
+    }
+
+    default YList<T> toList() {
+        return toYList(this);
+    }
+
+    YCollection<T> withAll(Collection<T> c);
+
+    YCollection<T> with(T t);
+    @SuppressWarnings("unchecked")
+    YCollection<T> with(T... t);
+
+    YCollection<T> withoutAll(Collection<T> c);
+
+    YCollection<T> without(T t);
+    @SuppressWarnings("unchecked")
+    YCollection<T> without(T... t);
+
+    default <V> YMap<T, V> toMapKeys(Function<T, V> f) {
+        YMap<T, V> result = hm();
+        for (T k : this) result.put(k, f.apply(k));
+        return result;
+    }
+
+    default <K, V> YMap<K, V> toMap(Function<T, K> keys, Function<T, V> values) {
+        YMap<K, V> result = hm();
+        for (T t : this) result.put(keys.apply(t), values.apply(t));
+        return result;
+    }
+
+    //TODO test
+    default T car() {
+        return iterator().next();
+    }
+
+    //TODO test
+    default T cadr() {
+        Iterator<T> iterator = iterator();
+        iterator.next();
+        return iterator.next();
+    }
+
+    YCollection<T> cdr();
+
+    default T first() {
+        return car();
+    }
+
+    default T firstOr(T t) {
+        if (isEmpty()) return t;
+        return first();
+    }
+
+    default T firstOrCalc(Supplier<T> supplier) {
+        if (isEmpty()) return supplier.get();
+        return first();
     }
 
     default YCollection<T> filter(Predicate<? super T> predicate) {
@@ -38,21 +100,6 @@ public interface YCollection<T> extends Collection<T> {
         return result;
     }
 
-    default T find(Predicate<? super T> predicate) {
-        for (T t : this) if (predicate.test(t)) return t;
-        return null;
-    }
-
-    default boolean isAny(Predicate<? super T> predicate) {
-        for (T t : this) if (predicate.test(t)) return true;
-        return false;
-    }
-
-    default boolean isAll(Predicate<? super T> predicate) {
-        for (T t : this) if (!predicate.test(t)) return false;
-        return true;
-    }
-
     default <R> YCollection<R> map(Function<? super T, ? extends R> mapper) {
         return YCollections.mapCollection(al(), this, mapper);
     }
@@ -69,7 +116,7 @@ public interface YCollection<T> extends Collection<T> {
     //y is actually 'flatMap'
 
     //Y is like merging/branching pipes
-    //   so any 'map' operation can skip result / map result / generate many results
+    //   so any 'map' operation can filter result / map result / multiply results
     //adj - stands for adjacent
     default <R> YCollection<R> y(Function<? super T, ? extends Collection<? extends R>> mapper) {
         return flatMap(mapper);
@@ -122,45 +169,13 @@ public interface YCollection<T> extends Collection<T> {
         return result;
     }
 
-    //TODO test
-    default T car() {
-        return iterator().next();
-    }
-
-    //TODO test
-    default T cadr() {
-        Iterator<T> iterator = iterator();
-        iterator.next();
-        return iterator.next();
-    }
-
-    YCollection<T> cdr();
-
-    default T first() {
-        return car();
-    }
-
-    default T firstOr(T t) {
-        if (isEmpty()) return t;
-        return first();
-    }
-
-    default T firstOrCalc(Supplier<T> supplier) {
-        if (isEmpty()) return supplier.get();
-        return first();
-    }
-
-    //TODO test
-    default T first(Predicate<? super T> predicate) {
+    default T find(Predicate<? super T> predicate) {
         for (T t : this) if (predicate.test(t)) return t;
         return null;
     }
 
-    //TODO firstOr(Predicate<? super T> predicate, T default)
-    //TODO lastOr(Predicate<? super T> predicate, T default)
-
     //TODO test
-    default T last(Predicate<? super T> predicate) {
+    default T findLast(Predicate<? super T> predicate) {
         T result = null;
         for (T t : this) if (predicate.test(t)) result = t;
         return result;
@@ -244,29 +259,6 @@ public interface YCollection<T> extends Collection<T> {
         return min;
     }
 
-    default YSet<T> toSet() {
-        return toYSet(this);
-    }
-
-    default YList<T> toList() {
-        return toYList(this);
-    }
-
-    YCollection<T> withAll(Collection<T> c);
-
-    YCollection<T> with(T t);
-
-    @SuppressWarnings("unchecked")
-    YCollection<T> with(T... t);
-
-    YCollection<T> withoutAll(Collection<T> c);
-
-    YCollection<T> without(T t);
-    @SuppressWarnings("unchecked")
-    YCollection<T> without(T... t);
-
-    //TODO reversed
-    //YSet returns not YSet but YList, because sorting algorithm itself creates list  //TODO fix this?
     default YList<T> sorted() {
         return YCollections.sortedCollection(this);
     }
@@ -279,13 +271,21 @@ public interface YCollection<T> extends Collection<T> {
         return YCollections.sortedCollection(this, (v1, v2) -> evaluator.apply(v1).compareTo(evaluator.apply(v2)));
     }
 
-    YCollection<T> take(int count);
-
     //TODO test
     default int count(Predicate<? super T> predicate) {
         int result = 0;
         for (T t : this) if (predicate.test(t)) result++;
         return result;
+    }
+
+    default boolean isAny(Predicate<? super T> predicate) {
+        for (T t : this) if (predicate.test(t)) return true;
+        return false;
+    }
+
+    default boolean isAll(Predicate<? super T> predicate) {
+        for (T t : this) if (!predicate.test(t)) return false;
+        return true;
     }
 
     //TODO test
@@ -352,18 +352,6 @@ public interface YCollection<T> extends Collection<T> {
             sb.append(prefix).append(o == null ? "null" : o.toString()).append(suffix);
         }
         return sb.toString();
-    }
-
-    default <V> YMap<T, V> toMapKeys(Function<T, V> f) {
-        YMap<T, V> result = hm();
-        for (T k : this) result.put(k, f.apply(k));
-        return result;
-    }
-
-    default <K, V> YMap<K, V> toMap(Function<T, K> keys, Function<T, V> values) {
-        YMap<K, V> result = hm();
-        for (T t : this) result.put(keys.apply(t), values.apply(t));
-        return result;
     }
 
     default boolean notEmpty() {

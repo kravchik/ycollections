@@ -40,6 +40,7 @@ public interface YSet<T> extends YCollection<T>, Set<T> {
     default <R> YSet<R> y(Function<? super T, ? extends Collection<? extends R>> mapper) {
         return flatMap(mapper);
     }
+    @Override
     default <R> YSet<R> yAdj(boolean cycle, BiFunction<T, T, Collection<R>> f) {
         return YCollections.yAdj(hs(), this, cycle, f);
     }

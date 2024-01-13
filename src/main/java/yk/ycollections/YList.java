@@ -190,7 +190,7 @@ public interface YList<T> extends YCollection<T>, List<T> {
     }
 
     @Override
-    default T last(Predicate<? super T> predicate) {
+    default T findLast(Predicate<? super T> predicate) {
         T result = null;
         for (int i = 0, thisSize = this.size(); i < thisSize; i++) {
             T t = this.get(i);
@@ -324,9 +324,11 @@ public interface YList<T> extends YCollection<T>, List<T> {
         return f.apply(this);
     }
 
+    @Override
     default <R> YList<R> y(Function<? super T, ? extends Collection<? extends R>> mapper) {
         return flatMap(mapper);
     }
+    @Override
     default <R> YList<R> yAdj(boolean cycle, BiFunction<T, T, Collection<R>> f) {
         YList<R> result = al();
         if (size() < 2) return result;
@@ -339,6 +341,7 @@ public interface YList<T> extends YCollection<T>, List<T> {
         }
         return result;
     }
+    @Override
     default <T2, R> YList<R> yZip(Collection<T2> b, BiFunction<T, T2, Collection<R>> f) {
         return YCollections.yZip(al(), this, b, f);
     }
