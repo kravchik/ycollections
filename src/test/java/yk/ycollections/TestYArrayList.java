@@ -6,12 +6,22 @@ import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 import static yk.ycollections.YArrayList.al;
-import static yk.ycollections.YArrayList.times;
+import static yk.ycollections.YArrayList.allocate;
 
 /**
  * Created by Yuri Kravchik on 17.11.2019
  */
 public class TestYArrayList {
+
+    @Test
+    public void testConstructors() {
+        YArrayList<String> orig = al();
+        YArrayList<String> copy = orig.copy();
+        orig.add("a");
+        copy.add("b");
+        assertEquals(al("a"), orig);
+        assertEquals(al("b"), copy);
+    }
 
     @Test
     public void testGetOr() {
@@ -22,10 +32,19 @@ public class TestYArrayList {
     }
 
     @Test
-    public void testTimes() {
-        assertEquals(al(), times(-1, i -> "_" + i));//maybe it is better to throw an exception
-        assertEquals(al(), times(0, i -> "_" + i));
-        assertEquals(al("_0", "_1", "_2"), times(3, i -> "_" + i));
+    public void testAllocate() {
+        assertEquals(al(), allocate(-1, i -> "_" + i));//maybe it is better to throw an exception
+        assertEquals(al(), allocate(0, i -> "_" + i));
+        assertEquals(al("_0", "_1", "_2"), allocate(3, i -> "_" + i));
+        assertEquals(al(), allocate(0));
+        assertEquals(al(null, null, null), allocate(3));
+    }
+
+    @Test
+    public void testReversed() {
+        assertEquals(al(), al().reversed());
+        assertEquals(al("a"), al("a").reversed());
+        assertEquals(al("b", "a"), al("a", "b").reversed());
     }
 
     @Test

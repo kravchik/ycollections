@@ -3,35 +3,14 @@ package yk.ycollections;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static yk.ycollections.YArrayList.al;
 
 public class YCollectionWrapper<T> implements YCollection<T> {
     private Collection<T> collection;
 
-    @Override
-    public YCollection<T> emptyInstance() {
-        throw new RuntimeException("Not implemented");
-    }
-
     public YCollectionWrapper(Collection<T> collection) {
         this.collection = collection;
-    }
-
-    @Override
-    public YList<T> filter(Predicate<? super T> predicate) {
-        YList<T> result = al();
-        for (T t : this) if (predicate.test(t)) result.add(t);
-        return result;
-    }
-
-    @Override
-    public <R> YList<R> map(Function<? super T, ? extends R> mapper) {
-        YList<R> result = al();
-        for (T t : this) result.add(mapper.apply(t));
-        return result;
     }
 
     @Override

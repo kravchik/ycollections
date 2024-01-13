@@ -2,7 +2,6 @@ package yk.ycollections;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -17,6 +16,11 @@ public class YArrayList<T> extends ArrayList<T> implements YList<T> {
     @Override
     public YCollection<T> emptyInstance() {
         return al();
+    }
+
+    @Override
+    public YArrayList<T> copy() {
+        return toYList(this);
     }
 
     @Override
@@ -57,7 +61,7 @@ public class YArrayList<T> extends ArrayList<T> implements YList<T> {
         return result;
     }
 
-    public static <T> YArrayList<T> al() {//to avoid creation of empty array if calling al(T... tt)
+    public static <T> YArrayList<T> al() {
         return new YArrayList<>();
     }
 
@@ -67,28 +71,10 @@ public class YArrayList<T> extends ArrayList<T> implements YList<T> {
         return result;
     }
 
-    public static <T> YArrayList<T> allocate(int size, Function_T_int<T> gen) {
-        YArrayList<T> result = al();
-        for (int i = 0; i < size; i++) result.add(gen.apply(i));
-        return result;
-    }
-
-    public static <T> YArrayList<T> times(int n, Function_T_int<T> generator) {
+    public static <T> YArrayList<T> allocate(int n, Function_T_int<T> generator) {
         YArrayList<T> result = new YArrayList<>();
         for (int i = 0; i < n; i++) result.add(generator.apply(i));
         return result;
-    }
-
-    //TODO test
-    @Override
-    public YArrayList<T> filter(Predicate<? super T> predicate) {
-        return YCollections.filterList(this, predicate);
-    }
-
-    //TODO test
-    @Override
-    public <R> YArrayList<R> map(Function<? super T, ? extends R> mapper) {
-        return YCollections.mapList(this, mapper);
     }
 
     @Override
@@ -275,7 +261,6 @@ public class YArrayList<T> extends ArrayList<T> implements YList<T> {
         return result;
     }
 
-    //TODO test
     @Override
     public YArrayList<T> reversed() {
         YArrayList<T> result = al();

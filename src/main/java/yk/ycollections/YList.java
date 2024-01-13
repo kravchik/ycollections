@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.*;
 
 import static yk.ycollections.YArrayList.al;
-import static yk.ycollections.YArrayList.toYList;
 
 
 /**
@@ -19,27 +18,29 @@ import static yk.ycollections.YArrayList.toYList;
 public interface YList<T> extends YCollection<T>, List<T> {
     //TODO nTimes
 
+    @Override
+    YList<T> copy();
+
     @Override//TODO remove (currently needed for cs translator)
     T get(int index);
-
-    @Override
-    default YList<T> copy() {
-        return toYList(this);
-    }
 
     default T getOr(int index, T or) {
         return index >= size() || index < 0 ? or : get(index);
     }
 
     @Override
-    YList<T> filter(Predicate<? super T> predicate);
+    default YList<T> filter(Predicate<? super T> predicate) {
+        return YCollections.filterList(al(), this, predicate);
+    }
 
     @Override
-    <R> YList<R> map(Function<? super T, ? extends R> mapper);
+    default <R> YList<R> map(Function<? super T, ? extends R> mapper) {
+        return YCollections.mapList(al(), this, mapper);
+    }
 
     @Override
     default <R> YList<R> mapWithIndex(BiFunction<Integer, ? super T, ? extends R> mapper) {
-        return (YList<R>) YCollection.super.mapWithIndex(mapper);
+        return YCollections.mapWithIndex(al(), this, mapper);
     }
 
     @Override

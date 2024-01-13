@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,6 +16,11 @@ public class YHashSet<T> extends LinkedHashSet<T> implements YSet<T> {
     @Override
     public YCollection<T> emptyInstance() {
         return hs();
+    }
+
+    @Override
+    public YHashSet<T> copy() {
+        return toYSet(this);
     }
 
     public static <T> YHashSet<T> toYSet(Collection<T> source) {
@@ -35,16 +38,6 @@ public class YHashSet<T> extends LinkedHashSet<T> implements YSet<T> {
 
     public static <T> YHashSet<T> hs() {//to avoid creation of empty array if calling hs(T... tt)
         return new YHashSet<>();
-    }
-
-    @Override
-    public YSet<T> filter(Predicate<? super T> predicate) {
-        return YCollections.filterSet(this, predicate);
-    }
-
-    @Override
-    public <R> YSet<R> map(Function<? super T, ? extends R> mapper) {
-        return YCollections.mapSet(this, mapper);
     }
 
     @Override

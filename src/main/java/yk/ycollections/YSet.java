@@ -8,7 +8,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static yk.ycollections.YHashSet.hs;
-import static yk.ycollections.YHashSet.toYSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,12 +18,20 @@ import static yk.ycollections.YHashSet.toYSet;
 public interface YSet<T> extends YCollection<T>, Set<T> {
     @Override
     default YSet<T> copy() {
-        return toYSet(this);
+        throw new RuntimeException("Not implemented, use toList/toSet");
     }
     @Override
-    YSet<T> filter(Predicate<? super T> predicate);
+    default YSet<T> filter(Predicate<? super T> predicate) {
+        return YCollections.filterCollection(hs(), this, predicate);
+    }
     @Override
-    <R> YSet<R> map(Function<? super T, ? extends R> mapper);
+    default <R> YSet<R> map(Function<? super T, ? extends R> mapper) {
+        return YCollections.mapCollection(hs(), this, mapper);
+    }
+    @Override
+    default <R> YSet<R> mapWithIndex(BiFunction<Integer, ? super T, ? extends R> mapper) {
+        return YCollections.mapWithIndex(hs(), this, mapper);
+    }
     @Override
     default <R> YSet<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
         return YCollections.flatMap(hs(), this, mapper);

@@ -15,8 +15,8 @@ import static yk.ycollections.YArrayList.toYList;
  * Time: 5:48 PM
  */
 public class YCollections {
-    public static <T> YArrayList<T> filterList(List<T> l, Predicate<? super T> predicate) {
-        YArrayList result = new YArrayList();
+    public static <T, CT extends Collection<T>> CT filterList(CT result, List<T> l,
+                                                              Predicate<? super T> predicate) {
         for (int i = 0, lSize = l.size(); i < lSize; i++) {
             T t = l.get(i);
             if (predicate.test(t)) result.add(t);
@@ -24,23 +24,36 @@ public class YCollections {
         return result;
     }
 
-    public static <T> YHashSet<T> filterSet(Collection<T> l, Predicate<? super T> predicate) {
-        YHashSet result = new YHashSet();
+    public static <T, CT extends Collection<T>> CT filterCollection(CT result, Collection<T> l,
+                                                                    Predicate<? super T> predicate) {
         for (T t : l) if (predicate.test(t)) result.add(t);
         return result;
     }
 
-    static <T, R> YArrayList<R> mapList(List<T> source, Function<? super T, ? extends R> mapper) {
-        YArrayList<R> result = new YArrayList();
+    static <T, R, CR extends Collection<R>> CR mapList(CR result, List<T> source,
+                                                                  Function<? super T, ? extends R> mapper) {
         for (int i = 0, sourceSize = source.size(); i < sourceSize; i++) {
             result.add(mapper.apply(source.get(i)));
         }
         return result;
     }
 
-    static <T, R> YSet<R> mapSet(Set<T> source, Function<? super T, ? extends R> mapper) {
-        YHashSet<R> result = new YHashSet();
+    static <T, R, CR extends Collection<R>> CR mapCollection(CR result, Collection<T> source,
+                                                             Function<? super T, ? extends R> mapper) {
         for (T t : source) result.add(mapper.apply(t));
+        return result;
+    }
+
+    static <T, R, CR extends Collection<R>> CR mapWithIndex(CR result, List<T> source,
+                                            BiFunction<Integer, ? super T, ? extends R> mapper) {
+        for (int i = 0; i < source.size(); i++) result.add(mapper.apply(i, source.get(i)));
+        return result;
+    }
+
+    static <T, R, CR extends Collection<R>> CR mapWithIndex(CR result, Collection<T> source,
+                                            BiFunction<Integer, ? super T, ? extends R> mapper) {
+        int i = 0;
+        for (T t : source) result.add(mapper.apply(i++, t));
         return result;
     }
 

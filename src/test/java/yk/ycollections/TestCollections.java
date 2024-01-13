@@ -159,7 +159,17 @@ public class TestCollections {
         //filter
         assertEquals(col, col.filter(x -> true));
         assertEquals(col, col.with("2").filter(x -> !x.equals("2")));
-        assertEquals(col.emptyInstance().with("1"), col.with("1").filter(x -> x.equals("1")));
+        assertEquals(col.with("1"), col.with("1", "2").filter(x -> x.equals("1")));
+
+        //find
+        assertEquals(null, col.find(s -> s.length() == 2));
+        assertEquals("aa", col.with("a", "aa", "aaa").find(s -> s.length() == 2));
+        assertEquals(null, col.with("a", "aaa").find(s -> s.length() == 2));
+
+        //mapWithIndex
+        assertEquals(col, col.mapWithIndex((i, s) -> s + i));
+        assertEquals(col.with("a0"), col.with("a").mapWithIndex((i, s) -> s + i));
+        assertEquals(col.with("a0", "b1"), col.with("a", "b").mapWithIndex((i, s) -> s + i));
 
         //first or
         assertEquals("a", col.with("a", "b").firstOr(null));

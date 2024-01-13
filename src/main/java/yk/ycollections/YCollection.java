@@ -10,17 +10,19 @@ import static yk.ycollections.YArrayList.toYList;
 import static yk.ycollections.YHashMap.hm;
 import static yk.ycollections.YHashSet.toYSet;
 
-//TODO tests and remove suppress UnusedDeclaration
-@SuppressWarnings("UnusedDeclaration")
 public interface YCollection<T> extends Collection<T> {
 
-    YCollection<T> emptyInstance();
-    //TODO test
+    default YCollection<T> emptyInstance() {
+        throw new RuntimeException("Not implemented");
+    }
+
     default YCollection<T> copy() {
         throw new RuntimeException("Not implemented, use toList/toSet");
     }
 
-    YCollection<T> filter(Predicate<? super T> predicate);
+    default YCollection<T> filter(Predicate<? super T> predicate) {
+        return YCollections.filterCollection(al(), this, predicate);
+    }
 
     default <K> YMap<K, YList<T>> groupBy(Function<T, K> grouper) {
         YMap<K, YList<T>> result = hm();
@@ -35,7 +37,7 @@ public interface YCollection<T> extends Collection<T> {
         }
         return result;
     }
-    //TODO test
+
     default T find(Predicate<? super T> predicate) {
         for (T t : this) if (predicate.test(t)) return t;
         return null;
@@ -51,16 +53,12 @@ public interface YCollection<T> extends Collection<T> {
         return true;
     }
 
-    <R> YCollection<R> map(Function<? super T, ? extends R> mapper);
+    default <R> YCollection<R> map(Function<? super T, ? extends R> mapper) {
+        return YCollections.mapCollection(al(), this, mapper);
+    }
 
-    //TODO test
     default <R> YCollection<R> mapWithIndex(BiFunction<Integer, ? super T, ? extends R> mapper) {
-        Iterator<T> it = iterator();
-        YCollection<R> result = al();
-        for (int i = 0; i < size(); i++) {
-            result.add(mapper.apply(i, it.next()));
-        }
-        return result;
+        return YCollections.mapWithIndex(al(), this, mapper);
     }
 
     default <R> YCollection<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
@@ -91,7 +89,6 @@ public interface YCollection<T> extends Collection<T> {
         return this;
     }
 
-    //TODO test
     default <T2> YCollection<T> forZip(YCollection<T2> b, BiConsumer<T, T2> f) {
         Iterator<T> i1 = this.iterator();
         Iterator<T2> i2 = b.iterator();

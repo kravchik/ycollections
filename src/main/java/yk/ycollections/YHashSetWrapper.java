@@ -3,16 +3,9 @@ package yk.ycollections;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class YHashSetWrapper<T> implements YSet<T> {
     private final Set<T> original;
-
-    @Override
-    public YCollection<T> emptyInstance() {
-        throw new RuntimeException("Not implemented");
-    }
 
     private static RuntimeException cannotModify() {
         return new RuntimeException("Cannot modify wrapper");
@@ -20,16 +13,6 @@ public class YHashSetWrapper<T> implements YSet<T> {
 
     public YHashSetWrapper(Set<T> original) {
         this.original = original;
-    }
-
-    @Override
-    public YSet<T> filter(Predicate<? super T> predicate) {
-        return YCollections.filterSet(original, predicate);
-    }
-
-    @Override
-    public <R> YSet<R> map(Function<? super T, ? extends R> mapper) {
-        return YCollections.mapSet(original, mapper);
     }
 
     @Override
