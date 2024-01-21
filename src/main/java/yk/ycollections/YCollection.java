@@ -129,7 +129,7 @@ public interface YCollection<T> extends Collection<T> {
     }
 
     /**
-     * The same as 'forEach', but returns 'this' so can continue using the instasnce.
+     * The same as 'forEach', but returns 'this' so can continue using the instance.
      */
     default YCollection<T> forEachFun(Consumer<T> consumer) {
         for (T t : this) consumer.accept(t);
