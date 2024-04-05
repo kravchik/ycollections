@@ -26,13 +26,6 @@ public class TestCollections {
     }
 
     @Test
-    public void testGroupBy() {
-        assertEquals(hm(), YArrayList.<String>al().groupBy(s -> s.length()));
-        assertEquals(hm(0, al("")), al("").groupBy(s -> s.length()));
-        assertEquals(hm(2, al("aa", "bb"), 1, al("b")), al("aa", "bb", "b").groupBy(s -> s.length()));
-    }
-
-    @Test
     public void testEachToEach() {
         YList<String> all = al("shift", "ctrl", "alt", "super");
         assertEquals("[[alt, ctrl], [alt, shift], [alt, super], [alt], [ctrl, shift], [ctrl, super], [ctrl], [shift, super], [shift], [super]]"

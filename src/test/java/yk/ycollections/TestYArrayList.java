@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import static org.junit.Assert.assertEquals;
 import static yk.ycollections.YArrayList.al;
 import static yk.ycollections.YArrayList.allocate;
+import static yk.ycollections.YHashMap.hm;
 
 /**
  * Created by Yuri Kravchik on 17.11.2019
@@ -97,6 +98,21 @@ public class TestYArrayList {
         assertEquals(al(), al("a").mapAdj(true, (a, b) -> a + b));
         assertEquals(al("ab", "ba"), al("a", "b").mapAdj(true, (a, b) -> a + b));
         assertEquals(al("ab", "bc", "ca"), al("a", "b", "c").mapAdj(true, (a, b) -> a + b));
+    }
+
+    @Test
+    public void testGroupBy() {
+        assertEquals(hm(), YArrayList.<String>al().groupBy(s -> s.length()));
+        assertEquals(hm(0, al("")), al("").groupBy(s -> s.length()));
+        assertEquals(hm(2, al("aa", "bb"), 1, al("b")), al("aa", "bb", "b").groupBy(s -> s.length()));
+    }
+
+    @Test
+    public void testCountBy() {
+        assertEquals(hm(), al().countBy(s -> s));
+        assertEquals(hm("s", 1), al("s").countBy(s -> s));
+        assertEquals(hm("s", 2), al("s", "s").countBy(s -> s));
+        assertEquals(hm("s", 2, "s2", 1), al("s", "s", "s2").countBy(s -> s));
     }
 
     private static YList sideEffect(Consumer<Consumer<String>> cc) {
