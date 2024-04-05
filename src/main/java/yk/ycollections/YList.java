@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.*;
 
 import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YHashMap.hm;
 
 
 /**
@@ -267,6 +268,12 @@ public interface YList<T> extends YCollection<T>, List<T> {
             found = true;
         }
         return min;
+    }
+
+    default YMap<T, Integer> countByGroup() {
+        YMap<T, Integer> result = hm();
+        for (T t : this) result.put(t, result.getOr(t, 0) + 1);
+        return result;
     }
 
     default <T2, T3> YList<T3> zipWith(YList<T2> b, BiFunction<T, T2, T3> f) {

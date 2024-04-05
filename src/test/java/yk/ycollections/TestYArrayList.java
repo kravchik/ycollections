@@ -109,10 +109,15 @@ public class TestYArrayList {
 
     @Test
     public void testCountBy() {
-        assertEquals(hm(), al().countBy(s -> s));
-        assertEquals(hm("s", 1), al("s").countBy(s -> s));
-        assertEquals(hm("s", 2), al("s", "s").countBy(s -> s));
-        assertEquals(hm("s", 2, "s2", 1), al("s", "s", "s2").countBy(s -> s));
+        assertEquals(hm(), al().countByGroup(s -> s));
+        assertEquals(hm("s", 1), al("s").countByGroup(s -> s));
+        assertEquals(hm("s", 2), al("s", "s").countByGroup(s -> s));
+        assertEquals(hm("s", 2, "s2", 1), al("s", "s", "s2").countByGroup(s -> s));
+
+        assertEquals(hm(), al().countByGroup());
+        assertEquals(hm("s", 1), al("s").countByGroup());
+        assertEquals(hm("s", 2), al("s", "s").countByGroup());
+        assertEquals(hm("s", 2, "s2", 1), al("s", "s", "s2").countByGroup());
     }
 
     private static YList sideEffect(Consumer<Consumer<String>> cc) {
