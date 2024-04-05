@@ -100,6 +100,15 @@ public interface YCollection<T> extends Collection<T> {
         return result;
     }
 
+    default <K> YMap<K, Integer> countBy(Function<T, K> grouper) {
+        YMap<K, Integer> result = hm();
+        for (T t : this) {
+            K group = grouper.apply(t);
+            result.put(group, result.getOr(group, 0) + 1);
+        }
+        return result;
+    }
+
     default <R> YCollection<R> map(Function<? super T, ? extends R> mapper) {
         return YCollections.mapCollection(al(), this, mapper);
     }

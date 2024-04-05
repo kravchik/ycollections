@@ -228,6 +228,12 @@ public class TestCollections {
         assertEquals(col.with("ab"), col.with("a").yZip(al("b"), (a, b) -> al(a + b)));
         assertEquals(col.with("ab"), col.with("a").yZip(al("b", "c"), (a, b) -> al(a + b)));
         assertEquals(col.with("ab"), col.with("a", "c").yZip(al("b"), (a, b) -> al(a + b)));
+
+        //countBy common
+        assertEquals(hm(), al().countBy(s -> s));
+        assertEquals(hm("s", 1), al("s").countBy(s -> s));
+        assertEquals(hm(1, 2), al("s", "d").countBy(s -> s.length()));
+        assertEquals(hm(1, 2, 2, 1), al("s", "k", "s2").countBy(s -> s.length()));
     }
 
     private static void testForZip(YCollection<String> c) {
