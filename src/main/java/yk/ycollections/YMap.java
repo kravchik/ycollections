@@ -18,6 +18,8 @@ public interface YMap<K, V> extends Map<K, V> {
     BiFunction PASS_FIRST = (o, o2) -> o;
     BiFunction PASS_SECOND = (o, o2) -> o2;
 
+    YMap<K, V> copy();
+
     //TODO notContainsKey()
     YMap<K, V> filter(BiPredicate<? super K, ? super V> predicate);
     <V2> YList<V2> mapToList(BiFunction<? super K, ? super V, V2> mapper);
@@ -52,9 +54,10 @@ public interface YMap<K, V> extends Map<K, V> {
 
     @Override
     YSet<K> keySet();
-
     @Override
     YCollection<V> values();
+    @Override
+    YSet<Entry<K, V>> entrySet();
 
     YMap<K, V> with(K k, V v);
     YMap<K, V> with(K k, V v, Object... other);

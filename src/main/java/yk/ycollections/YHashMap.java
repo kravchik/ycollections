@@ -40,6 +40,11 @@ public class YHashMap<K, V> extends LinkedHashMap<K, V> implements YMap<K, V> {
     }
 
     @Override
+    public YHashMap<K, V> copy() {
+        return toYMap(this);
+    }
+
+    @Override
     public YMap<K, V> filter(BiPredicate<? super K, ? super V> predicate) {
         YMap<K, V> result = hm();
         for (Map.Entry<K, V> entry : this.entrySet())
@@ -187,6 +192,11 @@ public class YHashMap<K, V> extends LinkedHashMap<K, V> implements YMap<K, V> {
     @Override
     public YCollection<V> values() {
         return new YCollectionWrapper<>(super.values());
+    }
+
+    @Override
+    public YSet<Map.Entry<K, V>> entrySet() {
+        return new YHashSetWrapper<>(super.entrySet());
     }
 
     //TODO test

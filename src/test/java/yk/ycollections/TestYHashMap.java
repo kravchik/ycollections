@@ -21,6 +21,9 @@ public class TestYHashMap {
 
         assertEquals(hm(), toYMap(hm()));
         assertEquals(hm("1", "2"), toYMap(hm("1", "2")));
+
+        assertEquals(hm(), hm().copy());
+        assertEquals(hm("1", "2"), hm("1", "2").copy());
     }
 
     @Test
