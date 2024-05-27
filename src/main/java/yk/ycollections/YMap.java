@@ -7,6 +7,8 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
+import static yk.ycollections.YArrayList.al;
+
 /**
  * Created with IntelliJ IDEA.
  * User: yuri
@@ -74,6 +76,16 @@ public interface YMap<K, V> extends Map<K, V> {
     default void putAll(K k, V v, Object... other) {
         put(k, v);
         for (int i = 0; i < other.length; i += 2) put((K) other[i], (V) other[i + 1]);
+    }
+
+    default void removeAll(Collection<K> keys) {
+        for (K key : keys) remove(key);
+    }
+
+    default YList<V> getAll(Collection<K> keys) {
+        YList<V> result = al();
+        for (K k : keys) if (containsKey(k)) result.add(get(k));
+        return result;
     }
 
     default boolean containsAll(Map<K, V> whom) {

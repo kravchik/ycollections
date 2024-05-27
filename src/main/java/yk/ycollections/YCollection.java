@@ -54,6 +54,15 @@ public interface YCollection<T> extends Collection<T> {
         return result;
     }
 
+    default <K, V> YMap<K, V> toMapMultiKeys(Function<T, Collection<K>> keys, Function<T, V> values) {
+        YMap<K, V> result = hm();
+        for (T t : this) {
+            Collection<K> kk = keys.apply(t);
+            for (K k : kk) result.put(k, values.apply(t));
+        }
+        return result;
+    }
+
     //TODO test
     default T car() {
         return iterator().next();

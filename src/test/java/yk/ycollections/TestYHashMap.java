@@ -92,4 +92,24 @@ public class TestYHashMap {
         assertEquals(hm(0, 1, 2, 4, 4, 5), hm(0, 1, 2, 3, 4, 5).with(hm(2, 4)));
     }
 
+    @Test
+    public void testRemoveAll() {
+        YHashMap<Integer, Integer> m = hm(1, 2, 3, 4, 5, 6);
+        m.removeAll(al());
+        assertEquals(hm(1, 2, 3, 4, 5, 6), m);
+        m.removeAll(al(3, 7));
+        assertEquals(hm(1, 2, 5, 6), m);
+        m.removeAll(al(1, 5));
+        assertEquals(hm(), m);
+    }
+
+    @Test
+    public void testGetAll() {
+        assertEquals(al(), hm(1, 2, 3, 4, 5, 6).getAll(al()));
+        assertEquals(al(), hm(1, 2, 3, 4, 5, 6).getAll(al(10)));
+        assertEquals(al(2), hm(1, 2, 3, 4, 5, 6).getAll(al(1)));
+        assertEquals(al(2, 4), hm(1, 2, 3, 4, 5, 6).getAll(al(1, 3)));
+        assertEquals(al(2, 4), hm(1, 2, 3, 4, 5, 6).getAll(al(1, 3, 10)));
+        assertEquals(al(null, 4), hm(1, null, 3, 4, 5, 6).getAll(al(1, 3, 10)));
+    }
 }

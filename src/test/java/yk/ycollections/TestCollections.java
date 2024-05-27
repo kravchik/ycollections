@@ -198,6 +198,11 @@ public class TestCollections {
         assertEquals(hm("k1", 1), col.with("1").toMap(v -> "k" + v, v -> Integer.parseInt(v)));
         assertEquals(hm("k1", 1, "k2", 2), col.with("1", "2").toMap(v -> "k" + v, v -> Integer.parseInt(v)));
 
+        //toMapMultiKeys
+        assertEquals(hm(), col.toMapMultiKeys(v -> al(v), v -> Integer.parseInt(v)));
+        assertEquals(hm("a", "ab", "b", "ab"), col.with("ab").toMapMultiKeys(s -> al(s.split("")), s -> s));
+        assertEquals(hm(), col.with("ab").toMapMultiKeys(s -> al(), s -> s));
+
         //notEmpty
         assertFalse(col.notEmpty());
         assertTrue(col.with("a").notEmpty());
