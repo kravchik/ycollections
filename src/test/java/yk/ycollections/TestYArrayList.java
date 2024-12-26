@@ -105,6 +105,10 @@ public class TestYArrayList {
         assertEquals(hm(), YArrayList.<String>al().groupBy(s -> s.length()));
         assertEquals(hm(0, al("")), al("").groupBy(s -> s.length()));
         assertEquals(hm(2, al("aa", "bb"), 1, al("b")), al("aa", "bb", "b").groupBy(s -> s.length()));
+
+        assertEquals(hm(), YArrayList.<String>al().groupBy(s -> s.length(), s -> s.length() * 2f));
+        assertEquals(hm(0, al(0f)), al("").groupBy(s -> s.length(), s -> s.length() * 2f));
+        assertEquals(hm(2, al(4f, 4f), 1, al(2f)), al("aa", "bb", "b").groupBy(s -> s.length(), s -> s.length() * 2f));
     }
 
     @Test

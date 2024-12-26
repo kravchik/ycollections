@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -35,6 +36,18 @@ public interface YSet<T> extends YCollection<T>, Set<T> {
     @Override
     default <R> YSet<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
         return YCollections.flatMap(hs(), this, mapper);
+    }
+    default YSet<T> forThis(Consumer<YSet<T>> c) {
+        c.accept(this);
+        return this;
+    }
+    default <T2> T2 mapThis(Function<YSet<T>, T2> f) {
+        return f.apply(this);
+    }
+    @Override
+    default YSet<T> peek(Consumer<T> consumer) {
+        for (T t : this) consumer.accept(t);
+        return this;
     }
     @Override
     default <R> YSet<R> y(Function<? super T, ? extends Collection<? extends R>> mapper) {

@@ -53,7 +53,7 @@ public interface YList<T> extends YCollection<T>, List<T> {
      * The same as 'forEach', but returns 'this' so can continue using the instance.
      */
     @Override
-    default YList<T> forEachFun(Consumer<T> consumer) {
+    default YList<T> peek(Consumer<T> consumer) {
         for (T t : this) consumer.accept(t);
         return this;
     }
@@ -138,7 +138,6 @@ public interface YList<T> extends YCollection<T>, List<T> {
 
     YList<T> reversed();
 
-    //TODO move to YCollection
     default <R> YList<R> mapAdj(boolean cycle, BiFunction<T, T, R> f) {
         YList<R> result = al();
         if (size() < 2) return result;
@@ -151,7 +150,6 @@ public interface YList<T> extends YCollection<T>, List<T> {
         return result;
     }
 
-    //TODO move to YCollection
     default YList<T> forAdj(boolean cycle, BiConsumer<T, T> consumer) {
         if (size() < 2) return this;
         int till = this.size() - (cycle ? 0 : 1);
@@ -163,7 +161,6 @@ public interface YList<T> extends YCollection<T>, List<T> {
         return this;
     }
 
-    //TODO move to YCollection
     default YList<T> forAdj(boolean cycle, Consumer3<T, T, T> consumer) {
         if (size() < 3) return this;
         int till = this.size() - (cycle ? 0 : 2);
@@ -176,7 +173,6 @@ public interface YList<T> extends YCollection<T>, List<T> {
         return this;
     }
 
-    //TODO move to YCollection
     default YList<T> forAdj(boolean cycle, Consumer4<T, T, T, T> consumer) {
         if (size() < 4) return this;
         int till = this.size() - (cycle ? 0 : 3);
@@ -322,12 +318,12 @@ public interface YList<T> extends YCollection<T>, List<T> {
         return resultIndex;
     }
 
-    default YList<T> forThis(YListConsumer<T> c) {
+    default YList<T> forThis(Consumer<YList<T>> c) {
         c.accept(this);
         return this;
     }
 
-    default <T2> T2 mapThis(YListFunction<T, T2> f) {
+    default <T2> T2 mapThis(Function<YList<T>, T2> f) {
         return f.apply(this);
     }
 
@@ -351,13 +347,5 @@ public interface YList<T> extends YCollection<T>, List<T> {
     @Override
     default <T2, R> YList<R> yZip(Collection<T2> b, BiFunction<T, T2, Collection<R>> f) {
         return YCollections.yZip(al(), this, b, f);
-    }
-
-    interface YListConsumer<T> {
-        void accept(YList<T> al);
-    }
-
-    interface YListFunction<T, T2> {
-        T2 apply(YList<T> al);
     }
 }

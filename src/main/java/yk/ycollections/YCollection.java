@@ -1,5 +1,8 @@
 package yk.ycollections;
 
+import yk.yfor.YFor;
+import yk.yfor.YForCollection;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -63,6 +66,10 @@ public interface YCollection<T> extends Collection<T> {
         return result;
     }
 
+    default YFor<T> yfor() {
+        return new YForCollection<>(this);
+    }
+
     //TODO test
     default T car() {
         return iterator().next();
@@ -109,6 +116,37 @@ public interface YCollection<T> extends Collection<T> {
         return result;
     }
 
+    default <K, V> YMap<K, YList<V>> groupBy(Function<T, K> grouper, Function<T, V> valueMapper) {
+        YMap<K, YList<V>> result = hm();
+        for (T t : this) {
+            K group = grouper.apply(t);
+            YList<V> gg = result.get(group);
+            if (gg == null) {
+                gg = al();
+                result.put(group, gg);
+            }
+            gg.add(valueMapper.apply(t));
+        }
+        return result;
+    }
+
+    //TODO test
+    default <K> YMap<K, YList<T>> groupByMultiKeys(Function<T, Collection<K>> grouper) {
+        YMap<K, YList<T>> result = hm();
+        for (T t : this) {
+            Collection<K> group = grouper.apply(t);
+            for (K g : group) {
+                YList<T> gg = result.get(g);
+                if (gg == null) {
+                    gg = al();
+                    result.put(g, gg);
+                }
+                gg.add(t);
+            }
+        }
+        return result;
+    }
+
     default <K> YMap<K, Integer> countByGroup(Function<T, K> grouper) {
         YMap<K, Integer> result = hm();
         for (T t : this) {
@@ -149,7 +187,7 @@ public interface YCollection<T> extends Collection<T> {
     /**
      * The same as 'forEach', but returns 'this' so can continue using the instance.
      */
-    default YCollection<T> forEachFun(Consumer<T> consumer) {
+    default YCollection<T> peek(Consumer<T> consumer) {
         for (T t : this) consumer.accept(t);
         return this;
     }

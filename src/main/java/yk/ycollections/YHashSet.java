@@ -3,7 +3,6 @@ package yk.ycollections;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.function.Consumer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -76,10 +75,5 @@ public class YHashSet<T> extends LinkedHashSet<T> implements YSet<T> {
         result.addAll(this);
         for (int i = 0; i < tt.length; i++) result.add(tt[i]);
         return result;
-    }
-
-    public <TT extends YHashSet<T>> YSet<T> forThis(Consumer<TT> c) {
-        c.accept((TT)this);
-        return this;
     }
 }

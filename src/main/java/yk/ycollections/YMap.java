@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static yk.ycollections.YArrayList.al;
@@ -129,4 +130,14 @@ public interface YMap<K, V> extends Map<K, V> {
         if (size() != s) throw new RuntimeException("Expected size " + s + " but was " + size());
         return this;
     }
+
+    default YMap<K, V> forThis(Consumer<YMap<K, V>> c) {
+        c.accept(this);
+        return this;
+    }
+
+    default <T2> T2 mapThis(Function<YMap<K, V>, T2> f) {
+        return f.apply(this);
+    }
+
 }

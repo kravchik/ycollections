@@ -188,11 +188,10 @@ public class YArrayList<T> extends ArrayList<T> implements YList<T> {
         return result;
     }
 
-    //TODO test
     @Override
     public YArrayList<T> without(T t) {
         YArrayList<T> result = al();
-        for (T tt : this) if (tt != t) result.add(tt);
+        for (T tt : this) if (!tt.equals(t)) result.add(tt);
         return result;
     }
 

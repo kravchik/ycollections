@@ -234,11 +234,15 @@ public class TestCollections {
         assertEquals(col.with("ab"), col.with("a").yZip(al("b", "c"), (a, b) -> al(a + b)));
         assertEquals(col.with("ab"), col.with("a", "c").yZip(al("b"), (a, b) -> al(a + b)));
 
-        //countBy common
-        assertEquals(hm(), al().countByGroup(s -> s));
-        assertEquals(hm("s", 1), al("s").countByGroup(s -> s));
-        assertEquals(hm(1, 2), al("s", "d").countByGroup(s -> s.length()));
-        assertEquals(hm(1, 2, 2, 1), al("s", "k", "s2").countByGroup(s -> s.length()));
+        //countByGroup
+        assertEquals(hm(), col.countByGroup(s -> s));
+        assertEquals(hm("s", 1), col.with("s").countByGroup(s -> s));
+        assertEquals(hm(1, 2), col.with("s", "d").countByGroup(s -> s.length()));
+        assertEquals(hm(1, 2, 2, 1), col.with("s", "k", "s2").countByGroup(s -> s.length()));
+
+        assertEquals(col, col.without(""));
+        //.toCharArray is to guarantee different object
+        assertEquals(col, col.with("a").without(new String("a".toCharArray())));
     }
 
     private static void testForZip(YCollection<String> c) {
