@@ -5,10 +5,10 @@ import java.util.function.Predicate;
 /**
  * 13.12.2024
  */
-public class YForUntil<T> extends YForAbstractPrev<T> {
+public class YForWhilst<T> extends YForAbstractPrev<T> {
     private final Predicate<T> predicate;
 
-    public YForUntil(YFor<T> prev, Predicate<T> predicate) {
+    public YForWhilst(YFor<T> prev, Predicate<T> predicate) {
         super(prev);
         this.predicate = predicate;
     }

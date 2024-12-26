@@ -15,6 +15,26 @@ import static yk.ycollections.YArrayList.al;
  */
 public interface YFor<T> {
 
+    static YForIntRange yfor(int to) {
+        return new YForIntRange(0, to);
+    }
+
+    static YForIntRange yfor(int from, int to) {
+        return new YForIntRange(from, to);
+    }
+
+    static YForIntRange yfor(int from, int to, int inc) {
+        return new YForIntRange(from, to, inc);
+    }
+
+    static <T> YForCollection<T> yfor(Collection<T> c) {
+        return new YForCollection<>(c);
+    }
+
+    static <T> YForRecursiveGenerator<T> yfor(T initial, Function<T, T> next) {
+        return new YForRecursiveGenerator<T>(initial, next);
+    }
+
     void next(YForResult<T> result);
 
     default YFor<T> filter(Predicate<T> predicate) {
@@ -25,8 +45,12 @@ public interface YFor<T> {
         return new YForMap<>(this, f);
     }
 
-    default <T2> YFor<T2> flatMap(Function<T, Collection<T2>> f) {
+    default <T2> YFor<T2> flatMap(Function<T, YFor<T2>> f) {
         return new YForFlatMap<>(this, f);
+    }
+
+    default <T2> YFor<T2> flatMapEager(Function<T, Collection<T2>> f) {
+        return new YForFlatMapEager<>(this, f);
     }
 
     default YFor<T> peek(Consumer<T> consumer) {
@@ -42,8 +66,27 @@ public interface YFor<T> {
         return indexed.apply(ind);
     }
 
-    default YFor<T> until(Predicate<T> predicate) {
-        return new YForUntil<>(this, predicate);
+    default YFor<T> limit(int times) {
+        return new YForLimit(this, times);
+    }
+
+    default YFor<T> whilst(Predicate<T> predicate) {
+        return new YForWhilst<>(this, predicate);
+    }
+
+    default <T2, T3> YFor<T3> withVal(T2 value, BiFunction<YFor<T>, T2, YFor<T3>> f) {
+        return f.apply(this, value);
+    }
+
+    default int count() {
+        int result = 0;
+        YForResult<T> r = new YForResult<>();
+        while(true) {
+            next(r);
+            if (!r.isPresent()) break;
+            result++;
+        }
+        return result;
     }
 
     default YList<T> toList() {
