@@ -74,6 +74,14 @@ public interface YFor<T> {
         return new YForWhilst<>(this, predicate);
     }
 
+    default YFor<T> skip(int count) {
+        return new YForSkipCount<>(this, count);
+    }
+
+    default YFor<T> skip(Predicate<T> predicate) {
+        return new YForSkipByPredicate<>(this, predicate);
+    }
+
     default <T2, T3> YFor<T3> withVal(T2 value, BiFunction<YFor<T>, T2, YFor<T3>> f) {
         return f.apply(this, value);
     }
@@ -98,6 +106,12 @@ public interface YFor<T> {
             else break;
         }
         return result;
+    }
+
+    default T first() {
+        YForResult<T> r = new YForResult<>();
+        next(r);
+        return r.getResult();
     }
 
     default T reduce(BiFunction<T, T, T> reducer) {

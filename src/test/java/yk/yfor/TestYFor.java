@@ -2,8 +2,7 @@ package yk.yfor;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static yk.ycollections.YArrayList.al;
 import static yk.yfor.YFor.yfor;
 
@@ -17,6 +16,14 @@ public class TestYFor {
         assertEquals(al(), yfor(al()).map(c -> c + "").toList());
         assertEquals(al("1"), yfor(al(1)).map(c -> c + "").toList());
         assertEquals(al("1", "2"), yfor(al(1, 2)).map(c -> c + "").toList());
+    }
+
+    @Test
+    public void testFirst() {
+        assertNull(al().yfor().first());
+        assertNull(yfor(al(1, 2)).filter(c -> false).first());
+        assertEquals((Integer)1, al(1).first());
+        assertEquals("1", yfor(al(1)).map(c -> c + "").first());
     }
 
     @Test
@@ -116,6 +123,22 @@ public class TestYFor {
     public void testWhilst() {
         assertEquals(al(), yfor(5).whilst(a -> a < 0).toList());
         assertEquals(al(0, 1, 2), yfor(5).whilst(a -> a < 3).toList());
+    }
+
+    @Test
+    public void testSkip() {
+        assertEquals(al(), yfor(5).skip(100).toList());
+        assertEquals(al(0, 1, 2, 3, 4), yfor(5).skip(0).toList());
+        assertEquals(al(1, 2, 3, 4), yfor(5).skip(1).toList());
+        assertEquals(al(2, 3, 4), yfor(5).skip(2).toList());
+    }
+
+    @Test
+    public void testSkipWhile() {
+        assertEquals(al(), yfor(5).skip(i -> i > -1).toList());
+        assertEquals(al(0, 1, 2, 3, 4), yfor(5).skip(i -> i > 100).toList());
+        assertEquals(al(1, 2, 3, 4), yfor(5).skip(i -> i < 1).toList());
+        assertEquals(al(2, 3, 4), yfor(5).skip(i -> i < 2).toList());
     }
 
     @Test
